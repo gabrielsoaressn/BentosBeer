@@ -7,4 +7,4 @@ class Pedido {
         this.qtd = qtd
     }
 }
-module.exports =  Pedido
+export default Pedido;
