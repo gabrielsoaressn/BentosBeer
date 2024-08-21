@@ -20,4 +20,4 @@ class GerenciadorCRUD {
     }
 }
 
-module.exports = GerenciadorCRUD
+export default GerenciadorCRUD;

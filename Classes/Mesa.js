@@ -6,4 +6,4 @@ class Mesa {
         this.garcom = garcom;
     }
 }
-module.exports = Mesa
+export default Mesa;

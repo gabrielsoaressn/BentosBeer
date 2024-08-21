@@ -8,4 +8,4 @@ class Conta {
     }
 }
 
-module.exports = Conta
+export default Conta;

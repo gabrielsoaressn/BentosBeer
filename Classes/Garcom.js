@@ -4,4 +4,4 @@ class Garcom {
         this.nome = nome;
     }
 }
-module.exports = Garcom
+export default Garcom;

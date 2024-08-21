@@ -28,4 +28,4 @@ class ConnectionDB {
     }
 }
 
-export default ConnectionDB
+export default ConnectionDB;
