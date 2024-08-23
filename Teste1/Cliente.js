@@ -1,5 +1,5 @@
 class Cliente {
-    constructor(id, nome, mesa, pedidos = [], historicoCompras = [], torcedorFlamengo = false, assisteOnePiece = false, cidade = ''){
+    constructor(id, nome, mesa, pedidos = [], torcedorFlamengo = false, assisteOnePiece = false, cidade = '') {
         this.id = id;
         this.nome = nome;
         this.mesa = mesa;
@@ -8,6 +8,7 @@ class Cliente {
         this.assisteOnePiece = assisteOnePiece;
         this.cidade = cidade;
     }
+
     adicionarPedido(pedido) {
         this.pedidos.push(pedido);
     }
@@ -16,17 +17,10 @@ class Cliente {
         this.pedidos = this.pedidos.filter(pedido => pedido.id !== pedidoId);
     }
 
-    calcularDesconto() {
-        if (this.torcedorFlamengo || this.assisteOnePiece || this.cidade.toLowerCase() === 'sousa') {
-            return 5; // 5% de desconto
-        }
-        return 0;
-    }
-
     aplicarDesconto(total) {
-        const desconto = this.calcularDesconto();
+        let desconto = (this.torcedorFlamengo || this.assisteOnePiece || this.cidade.toLowerCase() === 'sousa') ? 5 : 0; // 5% de desconto
         return total - (total * (desconto / 100));
     }
 }
-    
-    export default Cliente;
+
+export default Cliente;
