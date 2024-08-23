@@ -11,24 +11,22 @@ class Conta {
 
     adicionarPedido(pedido) {
         this.pedidos.push(pedido);
-        this.calcularTotal(); // recalcula o total apos adicionar um novo pedido
+        this.calcularTotal(); // recalcula o total após adicionar um novo pedido
     }
 
     calcularTotal() {
-        // soma cada pedido e calcula o total
-        let total = this.pedidos.reduce((acc, pedido) => acc + pedido.calcularTotal(), 0);
-        // aplica o desconto chamando a classe cliente onde está o método de aplicar o desconto
-        this.total = this.cliente.aplicarDesconto(total);
+        // Soma os totais de cada pedido
+        let totalSemDesconto = this.pedidos.reduce((acc, pedido) => acc + pedido.calcularTotal(), 0);
+        // Aplica o desconto do cliente
+        this.total = this.cliente.aplicarDesconto(totalSemDesconto);
         return this.total;
     }
 
     fecharConta() {
-        // fecha a conta, atualizando o status
         this.status = 'Fechada';
     }
 
     obterDetalhesConta() {
-        // resumo da conta
         return {
             cliente: this.cliente.nome,
             mesa: this.mesa.numero,
