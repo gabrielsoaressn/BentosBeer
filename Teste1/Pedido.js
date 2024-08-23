@@ -14,11 +14,8 @@ class Pedido {
     }
 
     calcularTotal() {
-        // pedido sem desconto
-        let total = this.produtos.reduce((total, item) => total + (item.produto.preco * item.quantidade), 0);
-        // chama o aplicar desconto do cliente
-        total = this.cliente.aplicarDesconto(total);
-        return total;
+        // total sem desconto
+        return this.produtos.reduce((total, item) => total + (item.produto.preco * item.quantidade), 0);
     }
 }
 
