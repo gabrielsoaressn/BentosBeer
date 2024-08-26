@@ -217,6 +217,54 @@ class GerenciadorCRUD {
             throw error;
         }
     }
-}
 
+    /////////////////////////////////
+    // CRUD Pedido
+    /////////////////////////////////}
+
+    async createPedido(cliente, garcom, produtos, qtd, status = 'Aberto') {
+        try {
+            const sql = 'INSERT INTO pedido (cliente_id, garcom_id, produto_id, qtd, status) VALUES (?, ?, ?, ?, ?)';
+            const values = [cliente, garcom, produtos, qtd, status];
+    
+            const [result] = await this.connection.query(sql, values);
+            console.log('Pedido criado com sucesso, ID:', result.insertId);
+        } catch (err) {
+            console.error('Erro ao criar pedido:', err);
+        }
+    }
+
+    async listarPedidos() {
+        try {
+            const sql = 'SELECT * FROM pedido';
+            const [results] = await this.connection.query(sql);
+            if (results.length > 0) {
+                console.log('Lista de Pedidos:');
+                results.forEach((pedido) => {
+                    console.log(`ID: ${pedido.id}, Cliente: ${pedido.cliente_id}, Garçom: ${pedido.garcom_id}, Produto: ${pedido.produto_id}, Quantidade: ${pedido.qtd}, Status: ${pedido.status}`);
+            });
+            } else {
+                console.log('Nenhum pedido encontrado.');
+            }
+        } catch (err) {
+            console.error('Erro ao listar pedidos:', err);
+        }
+    }
+
+    async atualizarPedido(id, clienteId, garcomId, produtoId, qtd, status) {
+        try {
+            const sql = 'UPDATE pedido SET cliente_id = ?, garcom_id = ?, produto_id = ?, qtd = ?, status = ? WHERE id = ?';
+            const [result] = await this.connection.query(sql, [clienteId, garcomId, produtoId, qtd, status, id]);
+            if (result.affectedRows > 0) {
+                console.log('Pedido atualizado com sucesso!');
+            } else {
+                console.log('Nenhum pedido encontrado com esse ID.');
+            }
+        } catch (err) {
+            console.error('Erro ao atualizar pedido:', err);
+        }
+    }
+    
+    
+}
 export default GerenciadorCRUD;
