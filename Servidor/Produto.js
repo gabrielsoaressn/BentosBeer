@@ -3,7 +3,6 @@ class Produto {
         this.id = id;
         this.nome = nome;
         this.preco = preco;
-        this.descricao = descricao
     }
 }
 
