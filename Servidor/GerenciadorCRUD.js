@@ -251,6 +251,28 @@ class GerenciadorCRUD {
         }
     }
 
+    async listarPedidosPorClienteID(clienteID) {
+        try {
+            // SQL para selecionar todos os pedidos com o cliente_id especificado
+            const sql = 'SELECT * FROM pedido WHERE cliente_id = ?';
+            
+            // Executa a query com o clienteID como parâmetro
+            const [results] = await this.connection.query(sql, [clienteID]);
+            
+            // Verifica se há pedidos para o cliente especificado
+            if (results.length > 0) {
+                console.log(`Lista de Pedidos para o Cliente ID ${clienteID}:`);
+                results.forEach((pedido) => {
+                    console.log(`ID: ${pedido.id}, Cliente: ${pedido.cliente_id}, Garçom: ${pedido.garcom_id}, Produto: ${pedido.produto_id}, Quantidade: ${pedido.qtd}, Status: ${pedido.status}`);
+                });
+            } else {
+                console.log(`Nenhum pedido encontrado para o Cliente ID ${clienteID}.`);
+            }
+        } catch (err) {
+            console.error('Erro ao listar pedidos por Cliente ID:', err);
+        }
+    }
+
     async atualizarPedido(id, clienteId, garcomId, produtoId, qtd, status) {
         try {
             const sql = 'UPDATE pedido SET cliente_id = ?, garcom_id = ?, produto_id = ?, qtd = ?, status = ? WHERE id = ?';
@@ -265,6 +287,20 @@ class GerenciadorCRUD {
         }
     }
     
+    async excluirPedido(id) {
+        try {
+            const sql = 'DELETE FROM pedido WHERE id = ?';
+            const [result] = await this.connection.query(sql, [id]);
+            if (result.affectedRows > 0) {
+                console.log('Pedido excluído com sucesso!');
+            } else {
+                console.log('Nenhum pedido encontrado com esse ID.');
+            }
+        } catch (err) {
+            console.error('Erro ao excluir pedido:', err);
+        }
+    }
     
 }
+
 export default GerenciadorCRUD;
