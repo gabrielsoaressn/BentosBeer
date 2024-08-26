@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Gerenciamento de Bar</title>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#" id="menuClientes">Clientes</a></li>
+                <li><a href="#" id="menuProdutos">Produtos</a></li>
+                <li><a href="#" id="menuGarcons">Garçons</a></li>
+            </ul>
+        </nav>
+        <div class="content">
+            <!-- Seção de Clientes -->
+            <div id="clientesSection" class="section">
+                <h2>Clientes</h2>
+                <input type="text" id="clienteNome" placeholder="Nome do Cliente">
+                <input type="text" id="clienteMesa" placeholder="Número da Mesa">
+                <button id="adicionarCliente">Adicionar Cliente</button>
+                <input type="text" id="pesquisaCliente" placeholder="Pesquisar Cliente por Nome">
+                <input type="number" id="clienteIdInput" placeholder="Pesquisar Cliente por ID">
+                <ul id="clientesLista"></ul>
+            </div>
+            
+            <!-- Seção de Produtos -->
+            <div id="produtosSection" class="section" style="display:none;">
+                <h2>Produtos</h2>
+                <input type="text" id="produtoNome" placeholder="Nome do Produto">
+                <input type="number" id="produtoPreco" placeholder="Preço do Produto">
+                <button id="adicionarProduto">Adicionar Produto</button>
+                <input type="text" id="pesquisaProduto" placeholder="Pesquisar Produto por Nome">
+                <input type="number" id="produtoIdInput" placeholder="Pesquisar Produto por ID">
+                <ul id="produtosLista"></ul>
+            </div>
+
+            <!-- Seção de Garçons -->
+            <div id="garconsSection" class="section" style="display:none;">
+                <h2>Garçons</h2>
+                <input type="text" id="garcomNome" placeholder="Nome do Garçom">
+                <button id="adicionarGarcom">Adicionar Garçom</button>
+                
+                <!-- Campo de pesquisa de garçons -->
+                <input type="text" id="pesquisaGarcom" placeholder="Pesquisar Garçom por Nome">
+
+                <ul id="garconsLista"></ul>
+            </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
