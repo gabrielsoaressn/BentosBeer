@@ -9,7 +9,7 @@ class ConnectionDB {
         this.connection = await mysql.createConnection({
             host: 'localhost',
             user: 'root',
-            password: 'sky210193', 
+            password: '1234', 
             database: 'BentosBeer' 
         });
     }
