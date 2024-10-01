@@ -5,7 +5,7 @@ Certifique-se de que já tenha instalado o Node.js em sua máquina
 ```sh
 # No diretório BentosBeer:
 ~$ npm install mysql2
-~$ node server;js
+~$ node server.js
 ```
 
 ### Ambiente de desenvolvimento:
@@ -13,12 +13,14 @@ Certifique-se de que já tenha instalado o Node.js em sua máquina
 
 ### UML
 #### Diagrama de Casos de Uso:
-
+![DiagramaCasos](Diagramas/Casos_de_uso.png)
 #### Diagrama de Classes:
-
+![DiagramaClasses](Diagramas/Diagrama-de-classes.png)
 #### Diagrama Modelo Conceitual
-
+![DiagramaMC](Diagramas/Diagrama-Modelo-Coneitual.png)
 #### Diagrama Estrutural
+![DiagramaEstrutural](Diagramas/Diagrama-Estrutural.png)
+
 
 
 * Caros Rafael e Rivando. peço que dêm uma olhada no diagrama canvas para entender as alterações que eu estou fazendo no código e também no banco de dados
