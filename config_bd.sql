@@ -1,65 +1,48 @@
-CREATE DATABASE IF NOT EXISTS BentosBeer;
+-- Criação do banco de dados
+CREATE DATABASE BentosBeer;
+
+-- Selecionar o banco de dados para uso
 USE BentosBeer;
 
-CREATE TABLE IF NOT EXISTS Garcom (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL
+-- Criação das tabelas
+CREATE TABLE Mesa (
+  idMesa INT PRIMARY KEY,
+  numero VARCHAR(45),
+  status VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS Produto (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    preco DECIMAL(10, 2) NOT NULL,
-    descricao TEXT
+CREATE TABLE Garcom (
+  idGarcom INT PRIMARY KEY,
+  nome TEXT
 );
 
-CREATE TABLE IF NOT EXISTS Cliente (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    mesa INT NOT NULL
+CREATE TABLE Cliente (
+  idCliente INT PRIMARY KEY,
+  nome VARCHAR(45),
+  status VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS Pedido (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    idCliente INT,
-    idGarcom INT,
-    total DECIMAL(10, 2) NOT NULL,
-    status ENUM('Aberto', 'Solicitado', 'Entregue') DEFAULT 'Aberto',
-    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (idCliente) REFERENCES Cliente(id),
-    FOREIGN KEY (idGarcom) REFERENCES Garcom(id)
+CREATE TABLE Pedido (
+  idPedido INT PRIMARY KEY,
+  Cliente_idCliente INT,
+  Garcom_idGarcom INT,
+  Mesa_idMesa INT,
+  CONSTRAINT fk_Pedido_Cliente1 FOREIGN KEY (Cliente_idCliente) REFERENCES Cliente(idCliente),
+  CONSTRAINT fk_Pedido_Garcom1 FOREIGN KEY (Garcom_idGarcom) REFERENCES Garcom(idGarcom),
+  CONSTRAINT fk_Pedido_Mesa1 FOREIGN KEY (Mesa_idMesa) REFERENCES Mesa(idMesa)
 );
 
-CREATE TABLE IF NOT EXISTS Pedido_Produto (
-    idPedido INT,
-    idProduto INT,
-    quantidade INT NOT NULL,
-    preco DECIMAL(10, 2) NOT NULL, -- PreÃ§o do produto no momento do pedido
-    PRIMARY KEY (idPedido, idProduto),
-    FOREIGN KEY (idPedido) REFERENCES Pedido(id),
-    FOREIGN KEY (idProduto) REFERENCES Produto(id)
+CREATE TABLE Produto (
+  idProduto INT PRIMARY KEY,
+  nome VARCHAR(45),
+  preco DECIMAL(10, 2)
 );
 
-ALTER TABLE Garcom ADD COLUMN pedidos_atendidos INT DEFAULT 0;
-
-
-CREATE TABLE IF NOT EXISTS Conta (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    idMesa INT,
-    idGarcom INT,
-    total DECIMAL(10, 2),
-    status ENUM('Aberta', 'Fechada') NOT NULL,
-    FOREIGN KEY (idMesa) REFERENCES Mesa(id),
-    FOREIGN KEY (idGarcom) REFERENCES Garcom(id)
+CREATE TABLE Quantidade (
+  Pedido_idPedido INT,
+  Produto_idProduto INT,
+  quantidade INT,
+  PRIMARY KEY (Pedido_idPedido, Produto_idProduto),
+  CONSTRAINT fk_Quantidade_Pedido1 FOREIGN KEY (Pedido_idPedido) REFERENCES Pedido(idPedido),
+  CONSTRAINT fk_Quantidade_Produto1 FOREIGN KEY (Produto_idProduto) REFERENCES Produto(idProduto)
 );
-
-alter table pedido drop column qtd;
-ALTER TABLE pedido DROP FOREIGN KEY pedido_ibfk_2;
-alter table pedido drop column produto_id;
-CREATE TABLE Conta (
-	pedido_id INT,
-         produto_id INT,
-         Quantidade INT,
-         PRIMARY KEY (pedido_id, produto_id),
-         FOREIGN KEY (pedido_id) REFERENCES Pedido(id),  
-         FOREIGN KEY (produto_id) REFERENCES Produto(id));
