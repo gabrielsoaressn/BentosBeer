@@ -1,8 +1,26 @@
 # Bento's Beer
 
-## Trabalho de Banco de Dados UFPB 2024.1
+### Como Executar?
+Certifique-se de que já tenha instalado o Node.js em sua máquina
+```sh
+# No diretório BentosBeer:
+~$ npm install mysql2
+~$ node server;js
+```
 
-### Alunos: Gabriel, Rivando e Rafael
+### Ambiente de desenvolvimento:
+ - Visual Studio Code
+
+### UML
+#### Diagrama de Casos de Uso:
+
+#### Diagrama de Classes:
+
+#### Diagrama Modelo Conceitual
+
+#### Diagrama Estrutural
+
+
 * Caros Rafael e Rivando. peço que dêm uma olhada no diagrama canvas para entender as alterações que eu estou fazendo no código e também no banco de dados
 * Obviamente o código só vai funcionar se vocês fizerem as alterações no seu banco de dados. Sugiro criar outro database com as alterações que eu coloquei no arquivo config_bd.mysql
 * Tudo que eu fiz foi apenas na pasta Classes, pra não atrapalhar alguma coisa que vocês eventualmente estejam fazendo
