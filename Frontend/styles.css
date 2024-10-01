@@ -1,0 +1,102 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    height: 100vh;
+    padding-top: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 10px;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    display: block;
+}
+
+.sidebar ul li a:hover {
+    background-color: #575757;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+.section {
+    display: none; /* Todas as seções são ocultas inicialmente */
+}
+
+.section.active {
+    display: block; /* A seção ativa será exibida */
+}
+
+input[type="text"], input[type="number"], button {
+    width: 50%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: block;
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+}
+
+/* Estilo específico para o botão para garantir cores e cursor */
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* Estilo para o hover no botão */
+button:hover {
+    background-color: #218838;
+}
+
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    display: flex; /* Flex container for horizontal alignment */
+    justify-content: space-between; /* Space between content and buttons */
+    align-items: center; /* Center align items vertically */
+}
+
+ul li button {
+    margin-left: 5px; /* Add some space between the buttons */
+}
+
+.button-group {
+    display: flex;
+    gap: 5px; /* Space between Edit and Remove buttons */
+}
+
