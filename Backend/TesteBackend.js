@@ -16,9 +16,11 @@ async function main() {
     //await gerenciador.listarGarcomPorId(2)  //FUNCIONA
     //await gerenciador.editarGarcom(4, "Arnaldo")
     //await gerenciador.excluirGarcom(i)
-    
+    //garcons[0].anotarPedido(clientes[0].id,2,3);
+    //garcons[0].entregarPedido(12);
+
     //await gerenciador.createMesa(1,'ocupada', 1); //FUNCIONA
-   
+ 
     
     //await gerenciador.createPedido("solicitado", clientes[0].id, garcons[0].id); //FUNCIONA
     

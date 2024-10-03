@@ -1,10 +1,9 @@
 class Conta {
-    constructor(id, idMesa, idGarcom, total, status) {
-        this.id = id;
-        this.idMesa = idMesa;
-        this.idGarcom = idGarcom;
-        this.total = total;
-        this.status = status; // Ex: 'Aberta', 'Fechada'
+    constructor(quantidade, pedido, produto, cliente) {
+        this.quantidade = quantidade;
+        this.pedido = pedido;
+        this.produto = produto;
+        this.cliente = cliente;
     }
 }
 

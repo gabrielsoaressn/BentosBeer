@@ -9,6 +9,10 @@ class Garcom {
 		this.gerenciadorCRUD = new GerenciadorCRUD(this.connection);
 	
 	}
+
+	async mostrarInfosCliente(cliente){
+		console.log(this.gerenciadorCRUD.ListarClientePorId(cliente))
+	}
 	
 	async cadastrarMesa(numero, status, garcom){
 		let mesa = this.gerenciadorCRUD.createMesa(numero,status,garcom)
@@ -20,28 +24,33 @@ class Garcom {
 		return cliente;
 	}
 	
-	async anotarPedido(cliente, pedido){
-
-		
-	}
-	async tirarConta(cliente) {
-		try {
-			const sql = `SELECT p.*
-			FROM Cliente c
-			JOIN Pedido pd ON c.idCliente = pd.Cliente_idCliente
-			JOIN Conta co ON pd.idPedido = co.Pedido_idPedido
-			JOIN Produto p ON co.Produto_idProduto = p.idProduto
-			WHERE c.idCliente = 1`;
-			const params = [cliente]; // Adicione os parâmetros necessários
-			console.log(sql)
-			let garcons = sql
-			//const garcons = rows.map(row => new Garcom(row.IdGarcom, row.Nome, connection));
-			return garcons;
-
-		} catch (error) {
-			console.error('Erro ao tirar a conta:', error);
-			throw error; // Repassa o erro
+	async anotarPedido(cliente, quantidade, produto) {
+		let pedido = await this.gerenciadorCRUD.createPedido("solicitado", cliente, this.id);
+		console.log("Pedido criado:", pedido);  // Verifique se o pedido está sendo criado corretamente
+		if (!pedido || !pedido.id) {
+			console.error("Erro: Pedido inválido ou id de pedido não definido.");
+			return;
 		}
+		this.gerenciadorCRUD.createConta(quantidade, pedido.id, produto, cliente);
+	}
+	
+	async entregarPedido(pedido) {
+		console.log("Pedido passado para entregarPedido:", pedido);  // Verifique se o pedido é válido e tem o campo `id`
+		if (!pedido) {
+			console.error("Erro: Pedido inválido ou sem ID definido.");
+			return;
+		}else console.log("pedido é um id válido")
+		
+		await this.gerenciadorCRUD.editarStatusPedido(pedido, "entregue");
+		console.log("Status do pedido: entregue");
+	}
+	
+	
+	async tirarConta(cliente) {
+		this.gerenciadorCRUD.listarProdutoQtd()
+	}
+	async registrarFormaPagamento(cliente, formaPagamento){
+		this.gerenciadorCRUD.editarContaFormaPagamento()
 	}
 
 	}

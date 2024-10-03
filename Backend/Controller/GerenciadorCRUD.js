@@ -1,6 +1,8 @@
-import Garcom from '../Classes/Garcom.js'
-import Cliente from '../Classes/Cliente.js'
-import Mesa from '../Classes/Mesa.js'
+import Garcom from '../Model/Garcom.js'
+import Cliente from '../Model/Cliente.js'
+import Mesa from '../Model/Mesa.js'
+import Pedido from '../Model/Pedido.js'
+import Conta from '../Model/Conta.js'
 
 class GerenciadorCRUD {
 	constructor(connection) {
@@ -37,6 +39,26 @@ class GerenciadorCRUD {
 			console.error('Erro ao buscar os clientes:', err);
 		}
 	}
+
+	async  ListarClientePorId(id) {
+		try {
+			// SQL para selecionar o garçom na tabela "garcom" pelo ID fornecido
+			const sql = 'SELECT * FROM garcom WHERE idCliente = ?';
+			
+			// Executa a query de seleção e espera o resultado
+			const [results] = await this.connection.query(sql, [id]);
+	
+			// Verifica se há um garçom com o ID fornecido
+			if (results.length > 0) {
+				console.log(sql);
+			} else {
+				console.log(`Nenhum garçom encontrado com o id "${id}".`);
+			}
+		} catch (err) {
+			console.error('Erro ao listar cliente:', err);  // Exibe erros, se houver
+		}
+	}
+
 
 	  /////////////////////////////////// 
 	 //////////CRUD Garçom//////////////
@@ -114,7 +136,7 @@ class GerenciadorCRUD {
 		}
 	}
 
-	async  listarGarcomPorId(id) {
+	async listarGarcomPorId(id) {
 	try {
 		// SQL para selecionar o garçom na tabela "garcom" pelo ID fornecido
 		const sql = 'SELECT * FROM garcom WHERE idGarcom = ?';
@@ -136,22 +158,22 @@ class GerenciadorCRUD {
 	}
 
 	async   editarGarcom(id, novoNome) {
-	try {
-		// SQL para atualizar o nome do garçom na tabela "garcom" pelo ID fornecido
-		const sql = 'UPDATE garcom SET nome = ? WHERE idGarcom = ?';
+		try {
+			// SQL para atualizar o nome do garçom na tabela "garcom" pelo ID fornecido
+			const sql = 'UPDATE garcom SET nome = ? WHERE idGarcom = ?';
 
-		// Executa a query de atualização
-		const [result] = await this.connection.query(sql, [novoNome, id]);
+			// Executa a query de atualização
+			const [result] = await this.connection.query(sql, [novoNome, id]);
 
-		// Verifica se a atualização foi bem-sucedida
-		if (result.affectedRows > 0) {
-			console.log(`Garçom com ID "${id}" foi atualizado para o nome "${novoNome}".`);
-		} else {
-			console.log(`Nenhum garçom encontrado com o ID "${id}".`);
+			// Verifica se a atualização foi bem-sucedida
+			if (result.affectedRows > 0) {
+				console.log(`Garçom com ID "${id}" foi atualizado para o nome "${novoNome}".`);
+			} else {
+				console.log(`Nenhum garçom encontrado com o ID "${id}".`);
+			}
+		} catch (err) {
+			console.error('Erro ao editar garçom:', err);  // Exibe erros, se houver
 		}
-	} catch (err) {
-		console.error('Erro ao editar garçom:', err);  // Exibe erros, se houver
-	}
 
 	}
 	
@@ -175,7 +197,7 @@ class GerenciadorCRUD {
 	}    
 	   ///////////////////////
 	  ///// CRUD Mesa ///////
-   ///////////////////////
+     ///////////////////////
 	async createMesa(numero, status, garcom) {
 		try {
 			// SQL para inserir um nova mesa na tabela "Mesa"
@@ -213,6 +235,10 @@ class GerenciadorCRUD {
 			console.error('Erro ao criar produto:', err);  // Exibe erros, se houver
 		} 
 	}
+	//FALTA IMPLEMENTAR
+	async listarProdutoQtd(){
+		
+	}
 
 	async listarProdutos(){
 	
@@ -249,15 +275,58 @@ class GerenciadorCRUD {
 		
 				// Executa a query de inserção e espera o resultado
 				const [results] = await this.connection.query(sql, [status, cliente, garcom]);
+				let pedido =  new Pedido(results.insertId, cliente, status, garcom)  
+				return pedido
 		
-				console.log('Pedido criado com sucesso! ID:', results.insertId);  // Exibe o ID do produto criado
+				
 			} catch (err) {
 				console.error('Erro ao criar pedido:', err);  // Exibe erros, se houver
 			} 
 		}
+
+	async editarStatusPedido(id, novoStatus) {
+		try {
+			console.log("Parâmetros passados para editarStatusPedido:", { id, novoStatus });  // Verifique os valores
+			let idPedido = parseInt(id, 10); //única maneira encontrada de fazer id virar um int.
+			const sql = 'UPDATE Pedido SET status = ? WHERE idPedido = ?';
+			const [result] = await this.connection.query(sql, [novoStatus, idPedido]);
 	
+			if (result.affectedRows > 0) {
+				console.log(`Pedido com ID "${id}" foi alterado para "${novoStatus}".`);
+			} else {
+				console.log(`Nenhum pedido encontrado com o ID "${id}".`);
+			}
+		} catch (err) {
+			console.error('Erro ao editar pedido:', err);
+		}
+	}
+		
+
+
+	
+	  ///////////////
+	 ///CRUD CONTA//
+	///////////////
+
+	async createConta(quantidade, pedido, produto, cliente){
+		try{
+			const sql = 'INSERT INTO conta (Quantidade, Pedido_idPedido, Produto_idProduto, Cliente_idCliente) VALUES (?, ?, ?, ?)';
+			const [results] = await this.connection.query(sql, [quantidade, pedido, produto, cliente])
+			let conta 
+			conta = new Conta(results.insertId, quantidade, pedido, produto, conta)
+			return conta;
+
+		} catch(err){
+			console.error('Erro ao criar conta: ', err)
+		}
+	}
+	
+	async editarContaFormaPagamento(conta){
 
 	}
+
+	
+}
  
 
 export default GerenciadorCRUD;
