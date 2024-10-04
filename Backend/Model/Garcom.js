@@ -19,8 +19,8 @@ class Garcom {
 		return mesa;
 	}
 
-	async cadastrarCliente(nome, mesa){
-		let cliente =  this.gerenciadorCRUD.createCliente(nome, mesa)
+	async cadastrarCliente(nome, mesa, clube, anime){
+		let cliente =  this.gerenciadorCRUD.createCliente(nome, mesa, clube, anime)
 		return cliente;
 	}
 	
@@ -45,13 +45,15 @@ class Garcom {
 		console.log("Status do pedido: entregue");
 	}
 	
-	
+	//precisa receber objeto cliente
 	async tirarConta(cliente) {
-		this.gerenciadorCRUD.listarProdutoQtd()
+		const produtosQtd = await this.gerenciadorCRUD.listarProdutoQtd(cliente);
+		console.log(produtosQtd);
 	}
+	
 	async registrarFormaPagamento(cliente, formaPagamento){
 		this.gerenciadorCRUD.editarContaFormaPagamento()
 	}
 
-	}
+}
 export default Garcom;

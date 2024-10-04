@@ -17,11 +17,11 @@ class GerenciadorCRUD {
 	 /////////CRUD CLIENTE////////////////////
 	/////////////////////////////////////////
 
-	async createCliente(nome, mesa) {
+	async createCliente(nome, mesa, clube, anime) {
 		try {
-			const sql = 'INSERT INTO cliente (nome, mesa) VALUES (?, ?)';
-			const [result] = await this.connection.query(sql, [nome, mesa]);
-			let cliente = new Cliente(result.insertId, nome, mesa)
+			const sql = 'INSERT INTO cliente (Nome, Mesa_idMesa, Clube, Anime) VALUES (?, ?, ?, ?)';
+			const [result] = await this.connection.query(sql, [nome, mesa, clube, anime]);
+			let cliente = new Cliente(result.insertId, nome, mesa, clube, anime)
 			return cliente;
 		} catch (err) {
 			console.error('Erro ao criar cliente:', err);
@@ -33,7 +33,7 @@ class GerenciadorCRUD {
 			const [rows] = await this.connection.query('SELECT * FROM cliente');
 
 			// Cria um array de objetos Cliente para cada linha retornada
-			const clientes = rows.map(row => new Cliente(row.idCliente, row.nome, row.mesa, row.Mesa_idMesa));
+			const clientes = rows.map(row => new Cliente(row.idCliente, row.nome, row.Mesa_idMesa, row.Clube, row.Anime));
 			return clientes;
 		} catch (err) {
 			console.error('Erro ao buscar os clientes:', err);
@@ -235,13 +235,8 @@ class GerenciadorCRUD {
 			console.error('Erro ao criar produto:', err);  // Exibe erros, se houver
 		} 
 	}
-	//FALTA IMPLEMENTAR
-	async listarProdutoQtd(){
-		
-	}
 
-	async listarProdutos(){
-	
+	async listarProdutos(){	
 		try {
 			// SQL para selecionar todos os produtos na tabela "produto"
 			const sql = 'SELECT * FROM produto';
@@ -263,6 +258,53 @@ class GerenciadorCRUD {
 			console.error('Erro ao listar garçons:', err);  // Exibe erros, se houver
 		}         
 	}
+	
+	//SERVE PARA TIRAR CONTA -> LISTA PRODUTO, PREÇO E QUANTIDADE
+	//TEM QUE PASSAR OBJETO
+	async listarProdutoQtd(cliente){
+		let desconto = 1
+		let idCliente = parseInt(cliente.id, 10);
+		if ((cliente.clube === 'Flamengo')||(cliente.anime ==='One Piece')) {
+			desconto = 0.8; // Desconto de 20%
+		}
+		try{
+			const sql = `SELECT prod.nome AS "Produto", 
+				prod.preco AS "Preço", 
+				ct.quantidade, 
+				(prod.preco * ct.quantidade * ?) AS "Total" 
+				FROM conta ct 
+				JOIN pedido ped ON ct.Pedido_idPedido = ped.idPedido 
+				AND ct.Cliente_idCliente = ped.Cliente_idCliente
+				JOIN produto prod ON ct.Produto_idProduto = prod.idProduto 
+				WHERE UPPER(ped.status) = 'ENTREGUE' 
+				AND ped.Cliente_idCliente = ?;`
+			const [results] = await this.connection.query(sql, [desconto, idCliente]);
+			  // Formatando os resultados
+			  let totalGeral = 0;
+			  const formattedResults = results.map(row => {
+				  // Calcula o total com duas casas decimais
+				  const totalFormatado = parseFloat(row.Total).toFixed(2);
+	  
+				  // Soma o total
+				  totalGeral += parseFloat(totalFormatado);
+	  
+				  return {
+					  Produto: row.Produto,
+					  Preço: parseFloat(row.Preço).toFixed(2), // Formata o preço também
+					  quantidade: row.quantidade,
+					  Total: totalFormatado
+				  };
+			  });
+	  
+			  // Formata o total geral com duas casas decimais
+			  totalGeral = totalGeral.toFixed(2);
+			  return { produtos: formattedResults, totalGeral };
+	  
+		  } catch (err) {
+			  console.error('Erro ao listar produtos e quantidades:', err);
+		  }
+	}
+
 
 	  /////////////////////
 	 ////CRUD PEDIDO /////
@@ -319,12 +361,7 @@ class GerenciadorCRUD {
 		} catch(err){
 			console.error('Erro ao criar conta: ', err)
 		}
-	}
-	
-	async editarContaFormaPagamento(conta){
-
-	}
-
+	}	
 	
 }
  
