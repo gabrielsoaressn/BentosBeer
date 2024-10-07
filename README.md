@@ -1,7 +1,28 @@
 # Bento's Beer
-
-### Como Executar?
-Certifique-se de que já tenha instalado o Node.js em sua máquina
+O Bento's Beer é um programa _open source_ de software que permite o gerenciamento de clientes, mesas, pagamento, pedidos, produtos, estoque e outras instâncias pertencentes a um bar(ver  diagramas).
+## Como Funciona
+à base de uma arquitetura Cliente-Servidor. O Servidor hospeda o banco de dados, e executa o servidor. Do lado do cliente(que são os usuários) basta conectar-se via http.
+## Como Executar?
+Certifique-se de que já tenha instalado o Node.js e o banco de dados MySQL na sua máquina Servidor.
+### Configurando o Banco de Dados
+```sh
+# No diretório onde está o arquivo binário MySQL digite o seguinte comando:
+~$ mysql -u root -h localhost -p
+```
+Assim, você entrará no Sistema de Gerenciamento de Banco de Dados MySQL. Então digite o seguinte comando:
+```sh
+CREATE USER 'novo_usuario'@'localhost' IDENTIFIED BY '1234';
+```
+Substitua 'novo_usuario' por algum nome de usuário de sua preferência.
+Depois, você deve entrar no repositório BentosBeer e baixar o arquivo infra/config.sql
+Copiar os comandos que estão no arquivo e executar no MySQL.
+Quando terminar, executar os seguitnes comandos no MySQL:
+´´´sh
+GRANT ALL PRIVILEGES ON BentosBeer.* TO 'novo_usuario'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+´´´
+Por fim, localize o diretório do BentosBeer e execute os seguintes comandos:
 ```sh
 # No diretório BentosBeer:
 ~$ npm install mysql2
@@ -20,17 +41,3 @@ Certifique-se de que já tenha instalado o Node.js em sua máquina
 ![DiagramaMC](Diagramas/Diagrama-Modelo-Coneitual.png)
 #### Diagrama Estrutural
 ![DiagramaEstrutural](Diagramas/Diagrama-Estrutural.png)
-
-
-
-* Caros Rafael e Rivando. peço que dêm uma olhada no diagrama canvas para entender as alterações que eu estou fazendo no código e também no banco de dados
-* Obviamente o código só vai funcionar se vocês fizerem as alterações no seu banco de dados. Sugiro criar outro database com as alterações que eu coloquei no arquivo config_bd.mysql
-* Tudo que eu fiz foi apenas na pasta Classes, pra não atrapalhar alguma coisa que vocês eventualmente estejam fazendo
-* Resumindo criação de pastas para organização
-  * Tentei pensar como camadas -> Persistência é responsável pela conexão com o banco de dados e por executar rotinas de inicialização e finalização, controller faz as funções que controlam o sistema, classes/classes é o modelo do nosso software e falta um view que é a parte de front-end
-  * Melhorei alguns Create. Agora quando cria-se um Garçom(por exemplo) além de colocar uma linha no BD cria-se também um objeto.
-  * Link para o canva: https://www.canva.com/design/DAGOChj3XoA/Ia3NcCoRix8qqJqAgc5jOQ/edit?utm_content=DAGOChj3XoA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
-### Contexto:
-
-* Bento's Bar é um sistema de gerenciamento de um bar. Nele é possível realizar todas as atividades mais importantes que um CRUD precisa.
-![Diagramas de BD](https://github.com/user-attachments/assets/7e91a9da-95f7-4001-90e8-2d3490644553)
