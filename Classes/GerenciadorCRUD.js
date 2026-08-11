@@ -4,7 +4,7 @@ class GerenciadorCRUD {
         
     }
     // CRUD Garçom
-    async createGarcom(nome) {
+    /*async createGarcom(nome) {
         try {
             // SQL para inserir um novo garçom na tabela "garcom"
             const sql = 'INSERT INTO garcom (nome) VALUES (?)';
@@ -16,7 +16,18 @@ class GerenciadorCRUD {
         } catch (err) {
             console.error('Erro ao criar garçom:', err);  // Exibe erros, se houver
         } 
-    }
+    }*/
+    async createGarcom(nome) {
+        try {
+          const query = 'INSERT INTO Garcom (nome) VALUES (?)';
+          this.connection.query(query, [nome], (err, results) => {
+            if (err) throw err;
+            console.log('Garçom criado com sucesso!');
+          });
+        } catch (err) {
+          console.error('Erro ao criar garçom:', err);
+        }
+      }
 
     async listarGarcom(){
     
