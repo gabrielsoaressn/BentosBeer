@@ -19,6 +19,7 @@ import {
   rotasProdutos,
 } from './routes/cadastros.js';
 import { rotasSalao, rotasComandas } from './routes/comandas.js';
+import { rotasRelatorios } from './routes/relatorios.js';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PUBLICO = join(RAIZ, 'public');
@@ -60,6 +61,9 @@ export function criarApp() {
   api.use('/garcons', rotasGarcons);
   api.use('/categorias', rotasCategorias);
   api.use('/produtos', rotasProdutos);
+
+  // Relatorios
+  api.use('/relatorios', rotasRelatorios);
 
   app.use('/api', api);
 
