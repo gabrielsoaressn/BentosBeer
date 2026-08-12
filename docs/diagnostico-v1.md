@@ -128,9 +128,16 @@ Pontos de design relevantes:
 
 ## 4. Modelo de dados
 
-O repositório **não contém o script DDL** (o diagrama ER está apenas como imagem no `README.md`).
-O esquema abaixo é o que está efetivamente implícito nas queries de `GerenciadorCRUD.js` e
-`Relatorios.js`:
+> **Correção importante, feita depois.** Este diagnóstico foi escrito a partir de uma cópia local
+> parada em 16/09/2024, e afirmava que o DDL não estava versionado. **Estava.** O `origin/main`
+> seguiu com 35 commits até 07/10/2024 e traz o script real em
+> [`Infra/config_bd.sql`](../Infra/config_bd.sql), além de quatro diagramas em
+> [`Diagramas/`](../Diagramas). O esquema inferido abaixo continua valendo como retrato do que o
+> **código executava**, mas não é o esquema que a equipe havia modelado — e os dois divergiam entre
+> si. A comparação está no fim desta seção.
+
+O esquema abaixo é o que está implícito nas queries de `GerenciadorCRUD.js` e `Relatorios.js` — isto
+é, o que o código de fato esperava encontrar no banco:
 
 ### 4.1 Tabelas e colunas usadas pelo código
 
@@ -178,7 +185,42 @@ CREATE TABLE pedido (
 );
 ```
 
-### 4.3 Cardinalidades
+### 4.3 O DDL real, e por que ele não bate com o código
+
+`Infra/config_bd.sql`, do `origin/main`, é o esquema que a equipe modelou:
+
+```sql
+CREATE TABLE Mesa       (idMesa INT PRIMARY KEY, numero VARCHAR(45), status VARCHAR(255));
+CREATE TABLE Garcom     (idGarcom INT PRIMARY KEY, nome TEXT);
+CREATE TABLE Cliente    (idCliente INT PRIMARY KEY, nome VARCHAR(45), status VARCHAR(255));
+CREATE TABLE Produto    (idProduto INT PRIMARY KEY, nome VARCHAR(45), preco DECIMAL(10,2));
+CREATE TABLE Pedido     (idPedido INT PRIMARY KEY, Cliente_idCliente INT, Garcom_idGarcom INT,
+                         Mesa_idMesa INT, /* 3 chaves estrangeiras */);
+CREATE TABLE Quantidade (Pedido_idPedido INT, Produto_idProduto INT, quantidade INT,
+                         PRIMARY KEY (Pedido_idPedido, Produto_idProduto), /* 2 FKs */);
+```
+
+Comparado com o que o código executava:
+
+| | `Infra/config_bd.sql` (modelado) | Queries do `GerenciadorCRUD` (executado) |
+|---|---|---|
+| Mesa | **tabela própria**, com `status` | coluna `mesa` dentro de `cliente` |
+| Item do pedido | **`Quantidade`**, associativa com `quantidade` | `produto_id` e `qtd` direto em `pedido` |
+| Chaves estrangeiras | **5 declaradas** | nenhuma referenciada |
+| Nomes | `idMesa`, `Cliente_idCliente` | `id`, `cliente_id` |
+| Conta | não existe | `INSERT INTO conta` no `Backend/` |
+
+**As duas coisas nunca conversaram.** O modelo previa uma mesa de verdade e uma tabela associativa
+entre pedido e produto; o código foi escrito contra um esquema achatado, com a mesa virando atributo
+do cliente e o produto pendurado direto no pedido. Nenhum dos dois lados estava errado sozinho — o
+que faltou foi o encontro.
+
+Vale registrar para a apresentação: a v2 não inventou o modelo. `mesa` como tabela e `item_comanda`
+como associativa são exatamente o que `Infra/config_bd.sql` já desenhava. A reconstrução terminou o
+que o diagrama da equipe previa, e acrescentou o que faltava — `CHECK`, `ENUM`, coluna gerada com
+`UNIQUE`, `VIEW`, `TRIGGER` e a procedure transacional.
+
+### 4.4 Cardinalidades
 
 - `cliente` **1 — N** `pedido`
 - `garcom` **1 — N** `pedido`
@@ -186,7 +228,7 @@ CREATE TABLE pedido (
 - `cliente` **1 — 1** mesa (garantido em nível de aplicação por `verificarMesaOcupada`, não por
   constraint `UNIQUE` no banco)
 
-### 4.4 Classes de domínio (POJOs)
+### 4.5 Classes de domínio (POJOs)
 
 São classes anêmicas — apenas construtores atribuindo campos, sem comportamento, sem validação e
 sem mapeamento ORM. As rotas trabalham diretamente com os *row objects* do `mysql2`, então essas

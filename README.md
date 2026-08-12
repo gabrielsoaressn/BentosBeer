@@ -214,6 +214,16 @@ A versão originalmente entregue na disciplina está preservada na tag
 [`v1-entrega-antiga`](../../tree/v1-entrega-antiga), e o diagnóstico do que ela tinha de bom e de
 ruim está em [`docs/diagnostico-v1.md`](docs/diagnostico-v1.md).
 
+Material da primeira versão que continua no repositório porque tem valor próprio:
+
+- [`Infra/config_bd.sql`](Infra/config_bd.sql) — o DDL original. Vale ler ao lado de
+  [`db/01_schema.sql`](db/01_schema.sql): o modelo de 2024 já previa `Mesa` como tabela e
+  `Quantidade` como associativa entre pedido e produto, que é exatamente o papel de `mesa` e
+  `item_comanda` aqui. O código daquela versão é que rodava contra outro esquema, achatado. A v2
+  terminou o que o modelo previa.
+- [`Diagramas/`](Diagramas) — modelo conceitual, diagrama estrutural, diagrama de classes e casos de
+  uso, feitos pela equipe.
+
 ---
 
 <sub>

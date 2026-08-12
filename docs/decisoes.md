@@ -327,3 +327,36 @@ Nota de processo: as três primeiras execuções acusaram 11, 18 e 18 falhas, e 
 sistema — eram todas defeito da própria suíte (mesas esgotadas, número fora da faixa que o validador
 aceita, e confusão entre o formato de `/mesas`, que devolve `id`, e o de `/salao`, que devolve
 `mesa_id`). Vale registrar para quem for estender os testes depois.
+
+---
+
+### D21 — A cópia local estava 35 commits atrás, e o DDL existia
+
+**Situação**: descoberto ao tentar publicar a v2. O `git push` foi recusado porque o `origin/main`
+continha trabalho ausente localmente: **35 commits**, de 28/09 a 07/10/2024, que reorganizaram o
+projeto em `Backend/` (Model, Controller, Persistence), `Frontend/`, `Diagramas/` com quatro
+diagramas, e `Infra/config_bd.sql`.
+
+A cópia de trabalho a partir da qual as sete fases foram construídas estava parada em **16/09/2024** e
+nunca foi atualizada. Duas afirmações do diagnóstico caem por terra:
+
+- *"O repositório não contém o script DDL"* — contém: `Infra/config_bd.sql`.
+- *"O diagrama ER está apenas como imagem no README"* — há quatro diagramas versionados em
+  `Diagramas/`, incluindo modelo conceitual e diagrama estrutural.
+
+**Decisão**: `origin/main` mesclado na `v2-reconstrucao`. `Diagramas/` e `Infra/` preservados;
+`Backend/` e `Frontend/` removidos, como já havia acontecido com `Classes/` e `Servidor/` — são a
+mesma versão antiga, agora reorganizada, e continuam acessíveis pelo histórico e pela tag
+`v1-entrega-antiga`. O diagnóstico foi corrigido no lugar, com a comparação entre o esquema modelado
+e o esquema executado.
+
+**Por quê registrar e não apagar**: a divergência é a informação mais interessante que apareceu no
+projeto inteiro. O DDL previa `Mesa` como tabela e `Quantidade` como associativa entre pedido e
+produto — exatamente `mesa` e `item_comanda` da v2. O código, porém, rodava contra um esquema
+achatado, com a mesa virando coluna de `cliente` e o produto pendurado direto em `pedido`. O modelo
+estava certo e o código nunca o alcançou. Dizer isso é mais honesto, e mais útil na apresentação, do
+que fingir que a v2 inventou o modelo do zero.
+
+**Lição de processo**: `git fetch` antes de diagnosticar repositório. Todo o levantamento da Fase 0
+foi feito sobre uma foto vencida, e nenhuma das verificações que eu rodei — todas locais — poderia ter
+apontado isso. Só o push apontou.
