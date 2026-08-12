@@ -228,3 +228,47 @@ ele é diferente.
 **Por quê**: um `{{DB_NAME}}` no meio do DDL tornaria o arquivo ilegível e não executável fora do
 script — perdendo justamente o que ele precisa ser. A substituição é invisível no caso normal, em que
 o alvo já é `bentosbeer`.
+
+---
+
+### D15 — Datas como string, dinheiro como string até a borda
+
+**Decisão**: o pool usa `dateStrings: true` e mantém `decimalNumbers: false` (o padrão).
+
+**Por quê, para as datas**: sem isso, o driver converte `DATETIME` em objeto `Date`, que é um instante
+absoluto e volta ao JSON como UTC — a comanda aberta às 20h chegaria na tela como `23:00Z`, e alguém
+teria que desconverter. Para um sistema de um bar só, em um fuso só, a hora de parede **é** a
+verdade, e string elimina a classe de bug em que o horário muda três vezes no caminho entre o banco e
+a tela. Já perdemos uma rodada com fuso nesta fase (D12); duas seria teimosia.
+
+**Por quê, para o dinheiro**: `DECIMAL` chega como string de propósito, para não perder centavo em
+ponto flutuante. Toda soma acontece em SQL. A conversão para número mora em `src/http/formato.js` e
+roda no último passo antes do JSON — que é o que a especificação chama de "borda da resposta".
+
+---
+
+### D16 — O evento `connection` do pool entrega a conexão sem promise
+
+**Situação**: `pool.on('connection', c => c.query(...).catch(...))` parecia certo, mas derrubou a
+primeira requisição do servidor com *"You have tried to call .then() on the result of query that is
+not a promise"*. Mesmo importando de `mysql2/promise`, o evento repassa a conexão **crua**, no estilo
+callback — o `.catch()` estourava dentro do handler e pendurava o `getConnection`.
+
+**Decisão**: `typeof conexao.promise === 'function' ? conexao.promise() : conexao` antes de consultar.
+
+**Por quê**: funciona nos dois casos e não depende de qual das duas interfaces o mysql2 decide
+entregar. Achado ao subir o servidor pela primeira vez, não em revisão de código — que é o argumento
+para o critério de aceite de cada fase ser um comando executado, e não uma leitura.
+
+---
+
+### D17 — `dotenv` com caminho explícito para o `.env`
+
+**Situação**: `import 'dotenv/config'` procura o arquivo no **diretório de trabalho**. Rodar qualquer
+script de fora da raiz do projeto carregava zero credencial, e o erro que aparece é
+`Access denied for user 'root'` — como se a senha estivesse errada, e não ausente.
+
+**Decisão**: `dotenv.config({ path: <raiz>/.env })`, resolvido a partir de `import.meta.url`.
+
+**Por quê**: a mensagem enganosa custaria tempo de quem for corrigir o trabalho depois, e o custo de
+evitá-la é uma linha.
