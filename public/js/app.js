@@ -4,6 +4,10 @@
  * Hash e não History API: o servidor serve um arquivo estático só, e link com
  * hash sobrevive a recarregar a página sem precisar de rota coringa no Express.
  */
+// Antes de tudo: em github.io (ou com ?demo=1) este import instala a camada que
+// responde no lugar do servidor. Em localhost com servidor de pé, não faz nada.
+import './demo.js';
+
 import { montarSalao } from './telas/salao.js';
 import { montarListaComandas, montarComanda } from './telas/comanda.js';
 import { montarCardapio } from './telas/cardapio.js';

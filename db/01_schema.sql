@@ -209,9 +209,13 @@ SELECT c.id,
        g.nome    AS garcom,
        cl.nome   AS cliente,
        COUNT(i.id)                                      AS itens,
-       -- COUNT e nao SUM: SUM sobre inteiro devolve DECIMAL, que o driver
+       -- CASE e nao IF: com LEFT JOIN sem nenhum item, i.status e NULL, e
+       -- IF(NULL = 'cancelado', NULL, 1) cai no ramo do senao e conta 1 --
+       -- comanda vazia aparecia com "1 item ativo". No CASE, a comparacao com
+       -- NULL nao e verdadeira, nao ha ELSE, e o COUNT ignora o NULL.
+       -- COUNT e nao SUM porque SUM sobre inteiro devolve DECIMAL, que o driver
        -- entrega como string, e a contagem apareceria como "3" na API
-       COUNT(IF(i.status = 'cancelado', NULL, 1))        AS itens_ativos,
+       COUNT(CASE WHEN i.status <> 'cancelado' THEN 1 END) AS itens_ativos,
        COALESCE(SUM(i.subtotal), 0)                      AS total,
        TIMESTAMPDIFF(MINUTE, c.aberta_em, COALESCE(c.fechada_em, NOW())) AS minutos
 FROM comanda c

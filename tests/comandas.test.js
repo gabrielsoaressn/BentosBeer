@@ -56,6 +56,21 @@ describe('abrir comanda', () => {
     const { comanda } = await abrirComanda();
     assert.equal(comanda.cliente, null);
   });
+
+  test('comanda sem nenhum item conta zero itens ativos', async () => {
+    const { comanda } = await abrirComanda();
+
+    // Regressão: vw_comanda usava COUNT(IF(i.status = 'cancelado', NULL, 1)), e
+    // com LEFT JOIN sem itens o i.status vem NULL -- a comparação não é
+    // verdadeira, o IF caía no ramo do senão e contava 1. A tela mostrava
+    // "1 item" numa comanda vazia.
+    // em GET /comandas/:id o campo `itens` e o array; a contagem vem na listagem
+    assert.deepEqual(comanda.itens, []);
+    assert.equal(comanda.itens_ativos, 0);
+
+    const { corpo: lista } = await pegar('/comandas?status=aberta');
+    assert.equal(lista.find((c) => c.id === comanda.id).itens_ativos, 0);
+  });
 });
 
 describe('lançar e riscar item', () => {

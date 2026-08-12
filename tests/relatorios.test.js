@@ -51,6 +51,17 @@ describe('coerência entre os relatórios', () => {
     assert.ok(perto(soma(top.corpo, 'receita'), referencia), 'soma por produto');
   });
 
+  test('as comandas do resumo batem com a soma por garçom', async () => {
+    // Regressão: por-garcom usava INNER JOIN em item_comanda, então comanda
+    // fechada sem nenhum item saía da contagem e os dois relatórios discordavam
+    // de quantas comandas houve.
+    const [resumo, garcons] = await Promise.all([
+      pegar('/relatorios/resumo'),
+      pegar('/relatorios/por-garcom'),
+    ]);
+    assert.equal(soma(garcons.corpo, 'comandas'), resumo.corpo.comandas);
+  });
+
   test('as comandas do resumo batem com a soma por dia', async () => {
     const [resumo, diario] = await Promise.all([
       pegar('/relatorios/resumo'),
@@ -128,11 +139,18 @@ describe('por hora', () => {
     }
   });
 
-  test('o movimento se concentra no horário de bar', async () => {
-    const { corpo } = await pegar('/relatorios/por-hora');
+  test('o movimento do seed se concentra no horário de bar', async () => {
+    // Só até ontem, de propósito. A própria suíte abre e fecha umas vinte
+    // comandas na hora em que roda; incluindo hoje, o teste passava de
+    // madrugada (quando a hora corrente é 0h, dentro da janela do bar) e
+    // falhava de manhã. Teste que depende do relógio de quem o executa não
+    // mede o sistema, mede a hora.
+    const ontem = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+    const { corpo } = await pegar(`/relatorios/por-hora?ate=${ontem}`);
+
     const noite = soma(corpo.filter((h) => h.hora >= 18 || h.hora <= 1), 'comandas');
     const total = soma(corpo, 'comandas');
-    assert.ok(noite / total > 0.9, `esperava movimento noturno, veio ${noite}/${total}`);
+    assert.ok(noite / total > 0.9, `esperava movimento noturno no seed, veio ${noite}/${total}`);
   });
 });
 

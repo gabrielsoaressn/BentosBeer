@@ -298,3 +298,22 @@ canvas { display: block; width: 100%; height: auto; }
 .dialogo .linha-caixa { display: flex; align-items: center; gap: var(--e2); font-size: var(--t13); }
 .dialogo .linha-caixa input { width: auto; }
 .dialogo .acoes-dialogo { display: flex; justify-content: flex-end; gap: var(--e2); margin-top: var(--e4); }
+
+/* --- faixa da demonstração estática ---------------------------------------
+   Aparece só no GitHub Pages, onde não existe servidor. A página não pode
+   parecer um sistema ativo se não é um.
+   ------------------------------------------------------------------------- */
+.faixa-demo {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--amber); color: var(--stout);
+  padding: var(--e2) var(--e4);
+  font-size: var(--t11); line-height: 1.45;
+  border-bottom: 1.5px solid var(--amber-ink);
+}
+.faixa-demo strong { font-weight: 600; }
+.faixa-demo span { color: #4A3410; }
+.faixa-demo a { color: var(--stout); }
+body.com-faixa-demo .barra { top: 0; }
+@media (max-width: 600px) {
+  .faixa-demo { font-size: var(--t10); padding: var(--e2) var(--e3); }
+}

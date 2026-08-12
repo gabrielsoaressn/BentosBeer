@@ -106,12 +106,16 @@ export const relatorios = {
     const linhas = await query(
       `SELECT g.id, g.nome AS garcom, g.apelido,
               COUNT(DISTINCT c.id)                          AS comandas,
-              SUM(i.subtotal)                               AS receita,
-              ROUND(SUM(i.subtotal) / COUNT(DISTINCT c.id), 2) AS ticket_medio,
+              COALESCE(SUM(i.subtotal), 0)                  AS receita,
+              ROUND(COALESCE(SUM(i.subtotal), 0) / COUNT(DISTINCT c.id), 2) AS ticket_medio,
               CAST(ROUND(AVG(TIMESTAMPDIFF(MINUTE, c.aberta_em, c.fechada_em))) AS SIGNED) AS minutos_medios
          FROM garcom g
-         JOIN comanda c      ON c.garcom_id = g.id
-         JOIN item_comanda i ON i.comanda_id = c.id
+         JOIN comanda c           ON c.garcom_id = g.id
+         -- LEFT e nao INNER: com INNER, comanda fechada sem nenhum item saia da
+         -- contagem, e a soma de comandas por garcom nao fechava com a do
+         -- resumo, que usa LEFT. Dois relatorios discordando de quantas
+         -- comandas houve e pior do que um numero levemente diferente
+         LEFT JOIN item_comanda i ON i.comanda_id = c.id
         WHERE ${p.clausula}
         GROUP BY g.id, g.nome, g.apelido
         -- HAVING e nao WHERE: o filtro e sobre o resultado da agregacao.
