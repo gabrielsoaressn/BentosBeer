@@ -11,6 +11,13 @@ import express from 'express';
 import cors from 'cors';
 import { rota, middlewareErro, middlewareRotaInexistente } from './http/erros.js';
 import { ping } from './db/pool.js';
+import {
+  rotasMesas,
+  rotasClientes,
+  rotasGarcons,
+  rotasCategorias,
+  rotasProdutos,
+} from './routes/cadastros.js';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PUBLICO = join(RAIZ, 'public');
@@ -41,6 +48,13 @@ export function criarApp() {
       res.json({ ok: true, banco: 'conectado' });
     })
   );
+
+  // Cadastros
+  api.use('/mesas', rotasMesas);
+  api.use('/clientes', rotasClientes);
+  api.use('/garcons', rotasGarcons);
+  api.use('/categorias', rotasCategorias);
+  api.use('/produtos', rotasProdutos);
 
   app.use('/api', api);
 

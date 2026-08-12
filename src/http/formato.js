@@ -26,3 +26,20 @@ export const listaComDinheiro = (linhas, ...campos) =>
 
 /** COUNT() do MySQL tambem chega como string em algumas versoes. */
 export const inteiro = (valor) => (valor === null || valor === undefined ? null : Number(valor));
+
+/**
+ * BOOLEAN no MySQL e TINYINT(1), entao chega como 1 ou 0. Funcionaria em `if`
+ * por coincidencia -- 0 e falsy --, mas o contrato da API diz booleano, e
+ * `"ativo": 1` obriga quem consome a saber desse detalhe do banco.
+ */
+export const booleano = (valor) => (valor === null || valor === undefined ? null : Boolean(valor));
+
+/** Aplica `booleano` nos campos indicados de uma linha. */
+export function comBooleanos(linha, ...campos) {
+  if (!linha) return linha;
+  const copia = { ...linha };
+  for (const campo of campos) {
+    if (campo in copia) copia[campo] = booleano(copia[campo]);
+  }
+  return copia;
+}

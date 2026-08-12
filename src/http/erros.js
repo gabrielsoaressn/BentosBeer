@@ -168,9 +168,27 @@ export function traduzErroMysql(erro) {
   return null;
 }
 
+/**
+ * Erros que o express.json() levanta antes de qualquer rota rodar.
+ *
+ * Sem esta traducao, um corpo com JSON quebrado virava 500 com id de
+ * correlacao -- ou seja, o sistema chamava de "erro inesperado do servidor" uma
+ * requisicao mal formada do cliente, e enchia o log de ruido que nao e bug.
+ */
+function traduzErroDeCorpo(erro) {
+  if (erro.type === 'entity.parse.failed' || erro instanceof SyntaxError) {
+    return new AppError(400, 'O corpo da requisição não é um JSON válido.');
+  }
+  if (erro.type === 'entity.too.large') {
+    return new AppError(413, 'O corpo da requisição é grande demais.');
+  }
+  return null;
+}
+
 /** Middleware final. Precisa ser o ultimo `app.use` de todos. */
 export function middlewareErro(erro, req, res, _next) {
-  const traduzido = erro instanceof AppError ? erro : traduzErroMysql(erro);
+  const traduzido =
+    erro instanceof AppError ? erro : traduzErroDeCorpo(erro) ?? traduzErroMysql(erro);
 
   if (traduzido) {
     const corpo = { erro: traduzido.message };

@@ -272,3 +272,36 @@ script de fora da raiz do projeto carregava zero credencial, e o erro que aparec
 
 **Por quê**: a mensagem enganosa custaria tempo de quem for corrigir o trabalho depois, e o custo de
 evitá-la é uma linha.
+
+---
+
+### D18 — Uma fábrica de rotas CRUD, não cinco cópias
+
+**Situação**: mesas, clientes, garçons, produtos e categorias respondem ao mesmo desenho de rota —
+`GET /`, `GET /:id`, `POST /`, `PUT /:id`, `DELETE /:id`, todos com `?busca=`.
+
+**Decisão**: `src/http/crud.js` monta o router; cada recurso declara apenas o que é dele (as regras de
+validação, em `src/routes/cadastros.js`) e o SQL (em `src/repos/`).
+
+**Por quê**: cinco routers idênticos seriam ~300 linhas de cópia, e foi exatamente cópia assim que
+produziu o bug 9.3-8 da versão antiga — `editarGarcom` definida duas vezes no mesmo arquivo, com
+assinaturas diferentes, a segunda sobrescrevendo a primeira em silêncio. O que a disciplina avalia é
+o SQL, e ele continua inteiramente visível nos repositórios, um arquivo por tabela.
+
+---
+
+### D19 — `PUT` confere existência antes de atualizar
+
+**Situação**: o caminho natural seria decidir o 404 pelo `affectedRows` do `UPDATE`. Mas sem a flag
+`CLIENT_FOUND_ROWS`, o MySQL conta linhas **alteradas**, não linhas **encontradas** — então salvar um
+registro sem mudar nenhum campo devolve zero, e a rota responderia **404 para um registro que
+existe**.
+
+**Decisão**: `crud.js` chama `repo.porId(id)` antes do `UPDATE`. Uma consulta a mais por edição.
+
+**Por quê**: é o tipo de bug que não aparece em teste feliz — só quando alguém abre o formulário,
+não muda nada e clica em salvar. Custa uma consulta indexada por chave primária em um sistema de um
+bar. Há um teste dedicado a essa regressão ("PUT idêntico ao atual não vira 404"). O `DELETE`
+continua decidindo pelo `affectedRows`, onde a contagem é confiável.
+
+---

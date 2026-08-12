@@ -199,7 +199,12 @@ SELECT c.id,
        c.status,
        c.aberta_em,
        c.fechada_em,
+       -- as tres chaves ficam expostas junto com os nomes: quem vai desenhar a
+       -- tela quer o nome, e quem vai juntar a view com outra tabela quer a
+       -- chave. Sem elas, os repositorios juntariam por nome, que nao e chave
        c.mesa_id,
+       c.garcom_id,
+       c.cliente_id,
        m.numero  AS mesa,
        g.nome    AS garcom,
        cl.nome   AS cliente,
@@ -212,7 +217,8 @@ JOIN mesa m              ON m.id  = c.mesa_id
 JOIN garcom g            ON g.id  = c.garcom_id
 LEFT JOIN cliente cl     ON cl.id = c.cliente_id
 LEFT JOIN item_comanda i ON i.comanda_id = c.id
-GROUP BY c.id, c.status, c.aberta_em, c.fechada_em, c.mesa_id, m.numero, g.nome, cl.nome;
+GROUP BY c.id, c.status, c.aberta_em, c.fechada_em,
+         c.mesa_id, c.garcom_id, c.cliente_id, m.numero, g.nome, cl.nome;
 
 -- A fotografia do salao: toda mesa aparece, ocupada ou nao. O LEFT JOIN e o que
 -- faz a mesa livre continuar na lista, com comanda_id NULL -- um INNER JOIN
