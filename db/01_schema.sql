@@ -209,7 +209,9 @@ SELECT c.id,
        g.nome    AS garcom,
        cl.nome   AS cliente,
        COUNT(i.id)                                      AS itens,
-       SUM(IF(i.status = 'cancelado', 0, 1))            AS itens_ativos,
+       -- COUNT e nao SUM: SUM sobre inteiro devolve DECIMAL, que o driver
+       -- entrega como string, e a contagem apareceria como "3" na API
+       COUNT(IF(i.status = 'cancelado', NULL, 1))        AS itens_ativos,
        COALESCE(SUM(i.subtotal), 0)                      AS total,
        TIMESTAMPDIFF(MINUTE, c.aberta_em, COALESCE(c.fechada_em, NOW())) AS minutos
 FROM comanda c

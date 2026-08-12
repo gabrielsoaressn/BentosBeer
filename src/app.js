@@ -18,6 +18,7 @@ import {
   rotasCategorias,
   rotasProdutos,
 } from './routes/cadastros.js';
+import { rotasSalao, rotasComandas } from './routes/comandas.js';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PUBLICO = join(RAIZ, 'public');
@@ -48,6 +49,10 @@ export function criarApp() {
       res.json({ ok: true, banco: 'conectado' });
     })
   );
+
+  // Operacao
+  api.use('/salao', rotasSalao);
+  api.use('/comandas', rotasComandas);
 
   // Cadastros
   api.use('/mesas', rotasMesas);
