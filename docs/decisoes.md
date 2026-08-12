@@ -305,3 +305,25 @@ bar. Há um teste dedicado a essa regressão ("PUT idêntico ao atual não vira 
 continua decidindo pelo `affectedRows`, onde a contagem é confiável.
 
 ---
+
+---
+
+### D20 — Cada teste cria a própria mesa, e os arquivos rodam em série
+
+**Situação**: a suíte abre mais de vinte comandas, e o banco de teste tem 12 mesas com 5 já ocupadas
+pelo seed. As 7 livres acabavam e os testes falhavam com *"sem mesa livre"*. Pior: `node --test` roda
+os arquivos **em paralelo** por padrão, então um arquivo ocupava a mesa que o outro ia usar — e um
+apagava produto ou cliente enquanto o outro conferia somas. A falha era intermitente, o pior tipo.
+
+**Decisão**: `mesaLivre()` cria uma mesa nova, numerada na faixa 2000–9999 e sorteada, para cada
+comanda de teste; e `npm test` roda com `--test-concurrency=1`.
+
+**Por quê**: teste que depende de estado compartilhado com outro teste não é teste, é sorteio. Criar
+a mesa custa uma requisição e torna cada caso independente. A serialização resolve o resto: os três
+arquivos compartilham um banco só, e não vale a pena inventar isolamento por schema para uma suíte
+que roda em três segundos.
+
+Nota de processo: as três primeiras execuções acusaram 11, 18 e 18 falhas, e **nenhuma** era bug do
+sistema — eram todas defeito da própria suíte (mesas esgotadas, número fora da faixa que o validador
+aceita, e confusão entre o formato de `/mesas`, que devolve `id`, e o de `/salao`, que devolve
+`mesa_id`). Vale registrar para quem for estender os testes depois.

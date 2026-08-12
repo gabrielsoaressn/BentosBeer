@@ -9,7 +9,7 @@
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
     "db:reset": "node db/reset.js",
-    "test": "node db/reset.js --banco-de-teste && node --test tests/"
+    "test": "node db/reset.js --banco-de-teste && node --test --test-concurrency=1 tests/"
   },
   "dependencies": {
     "cors": "^2.8.5",
