@@ -1,0 +1,37 @@
+# MySQL 8.4 para desenvolvimento local.
+#
+# Existe porque a máquina de desenvolvimento não tinha servidor MySQL ativo
+# (ver decisão D2 em docs/decisoes.md). Quem já tem um MySQL 8 próprio pode
+# ignorar este arquivo por completo: basta apontar o .env para a instância dele.
+#
+#   npm run db:up     sobe e espera ficar saudável
+#   npm run db:down   derruba (o volume de dados sobrevive)
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: bentosbeer-mysql
+    restart: unless-stopped
+    # A imagem oficial roda em UTC. Um bar na Paraiba fecha comanda as 23h e o
+    # banco registraria como 02h do dia seguinte -- o relatorio do dia sairia
+    # errado justamente no horario de pico. Brasil nao tem mais horario de
+    # verao, entao -03:00 vale o ano inteiro.
+    command: --default-time-zone=-03:00
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-bentosbeer}
+      TZ: America/Sao_Paulo
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - dados:/var/lib/mysql
+    healthcheck:
+      # o --wait do docker compose depende deste healthcheck para saber
+      # quando o banco realmente aceita conexão, e não só quando o container subiu
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${DB_PASSWORD:-bentosbeer}"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+volumes:
+  dados:

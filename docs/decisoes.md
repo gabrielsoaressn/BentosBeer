@@ -163,3 +163,68 @@ publicada no GitHub); a reconstrução acontece na branch `v2-reconstrucao`.
 
 **Por quê**: o `main` continua servindo a versão que foi entregue na disciplina até que a v2 esteja
 completa e verificada. O merge é uma decisão explícita, não um efeito colateral da primeira fase.
+
+---
+
+### D11 — O segundo trigger é `trg_item_antes_update`
+
+**Situação**: a §4 da especificação anuncia "dois triggers", mas a §4.4 define apenas um
+(`trg_item_antes_insert`, que impede lançar item em comanda não aberta).
+
+**Decisão**: o segundo é `trg_item_antes_update`, aplicando a mesma regra no `UPDATE`.
+
+**Por quê**: é exatamente o furo que este projeto existe para corrigir. O bug 9.3-10 da versão antiga
+era uma regra validada na criação e esquecida na edição — sem este trigger, daria para riscar ou
+reajustar item de uma conta já fechada, e o faturamento de ontem mudaria hoje. A procedure de
+fechamento não é afetada: ela marca os itens como entregues **antes** de mudar o status da comanda,
+então o trigger a deixa passar.
+
+---
+
+### D12 — Fuso horário fixo em `-03:00` no servidor de banco
+
+**Situação**: a imagem oficial do MySQL roda em UTC. Com o host em BRT, o banco já estava em
+`2026-08-12 01:22` enquanto o host marcava `2026-08-11 22:22`. Detectado ao conferir o relatório por
+hora do seed, que mostrava comandas nas horas 0 e 1.
+
+**Consequência do bug, se tivesse passado**: entre 21h e meia-noite — o pico de um bar — `CURDATE()`
+no banco já é o dia seguinte. A venda fechada às 22h não apareceria no "relatório do dia", que é
+literalmente a última cena do roteiro de demonstração.
+
+**Decisão**: `--default-time-zone=-03:00` e `TZ=America/Sao_Paulo` no `docker-compose.yml`. Na Fase 2,
+o pool reforça o mesmo fuso por conexão (`pool.on('connection')` → `SET time_zone`), para o sistema
+ficar correto mesmo em uma instância MySQL de terceiros configurada em UTC.
+
+**Por quê**: o Brasil não tem mais horário de verão, então `-03:00` vale o ano inteiro e não depende
+das tabelas de fuso do MySQL estarem carregadas — que é o problema de usar o nome
+`America/Sao_Paulo` no `default-time-zone`.
+
+---
+
+### D13 — Chaves `UNIQUE` nomeadas
+
+**Situação**: a especificação declara `numero SMALLINT NOT NULL UNIQUE` em `mesa` e
+`nome VARCHAR(40) NOT NULL UNIQUE` em `categoria`, sem nomear os índices. O MySQL então os nomeia
+sozinho, a partir do nome da coluna.
+
+**Decisão**: nomeados como `uq_mesa_numero` e `uq_categoria_nome`.
+
+**Por quê**: o middleware de erro da Fase 2 traduz `ER_DUP_ENTRY` para mensagem de usuário lendo o
+**nome do índice** que estourou. Com índice chamado `numero`, a mensagem teria que ser adivinhada;
+com `uq_mesa_numero`, o mapeamento é direto e legível. Mesma razão de `uq_produto_nome` e
+`uq_mesa_ocupada`, que a especificação já nomeava.
+
+---
+
+### D14 — `reset.js` substitui o nome do banco em vez de usar placeholder
+
+**Situação**: `01_schema.sql` precisa criar e selecionar o banco por conta própria para ser
+executável no Workbench (é o arquivo que o professor abre primeiro), mas os testes da Fase 7 precisam
+do mesmo schema em `bentosbeer_test`.
+
+**Decisão**: o arquivo traz o nome real `bentosbeer`, e o `reset.js` troca a string pelo alvo quando
+ele é diferente.
+
+**Por quê**: um `{{DB_NAME}}` no meio do DDL tornaria o arquivo ilegível e não executável fora do
+script — perdendo justamente o que ele precisa ser. A substituição é invisível no caso normal, em que
+o alvo já é `bentosbeer`.
