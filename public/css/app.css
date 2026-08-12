@@ -96,10 +96,11 @@
 }
 .mesa .quem {
   font-size: var(--t11); color: var(--muted); line-height: 1.35;
-  /* nome composto longo transbordava o cartao; corta em duas linhas com reticencia */
+  /* Nome composto longo transbordava o cartao. A primeira tentativa foi
+     -webkit-line-clamp, que dentro do flex do cartao nao quebrou linha: cortou
+     no meio da palavra ("Fernanda Vieir"). Quebra normal resolve, e o grid
+     iguala a altura das linhas de qualquer jeito. */
   overflow-wrap: anywhere;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 /* mesa selecionada: outline, e nao box-shadow. O sistema tem UMA sombra, o anel
    de foco, e nenhuma decorativa -- mesmo uma sombra sem blur abre precedente */
