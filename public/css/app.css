@@ -1,0 +1,300 @@
+/* ===========================================================================
+   Layout e componentes.
+   =========================================================================== */
+
+/* --- esqueleto ----------------------------------------------------------- */
+.moldura { display: flex; min-height: 100vh; }
+
+.barra {
+  flex: 0 0 var(--barra);
+  background: var(--stout);
+  color: var(--cream);
+  padding: var(--e4) 0;
+  display: flex; flex-direction: column;
+}
+
+.marca {
+  display: flex; align-items: center; gap: var(--e2);
+  padding: 0 var(--e4) var(--e4);
+  color: var(--cream);
+}
+.marca svg { width: 30px; height: 30px; flex: none; }
+/* Fraktur SÓ aqui. Em qualquer outro lugar vira fantasia. */
+.marca .nome { font-family: var(--marca); font-size: var(--t22); line-height: 1; }
+
+.menu { display: flex; flex-direction: column; }
+.menu a {
+  display: block;
+  padding: 0.45rem var(--e4);
+  color: var(--cream);
+  text-decoration: none;
+  font-size: var(--t13);
+  border-left: 3px solid transparent;
+}
+.menu a:hover { background: #2A211A; }
+.menu a[aria-current="page"] {
+  border-left-color: var(--amber);
+  background: #241B15;
+  font-weight: 600;
+}
+.menu a:focus-visible { outline-offset: -2px; }
+
+.rodape-barra {
+  margin-top: auto; padding: var(--e4) var(--e4) 0;
+  font-size: var(--t10); color: #8A7962; line-height: 1.5;
+}
+
+.conteudo { flex: 1 1 auto; padding: var(--e5); min-width: 0; }
+.cabecalho-tela {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--e3); flex-wrap: wrap; margin-bottom: var(--e4);
+}
+
+/* --- placar de balcão -----------------------------------------------------
+   Não é card de métrica com número gigante: é uma linha de números pequenos,
+   tabulares, separados por fio — como o placar atrás do balcão.
+   ------------------------------------------------------------------------- */
+.placar {
+  display: flex; flex-wrap: wrap;
+  border: 1px solid var(--line); border-radius: var(--raio);
+  background: var(--paper);
+  margin-bottom: var(--e4);
+}
+.placar > div {
+  padding: var(--e2) var(--e4);
+  border-right: 1px solid var(--line);
+  flex: 0 1 auto;
+}
+.placar > div:last-child { border-right: none; }
+.placar .valor {
+  font-family: var(--numero); font-size: var(--t17); font-weight: 700;
+  font-variant-numeric: tabular-nums; display: block; line-height: 1.25;
+}
+
+/* --- grade de mesas ------------------------------------------------------ */
+.salao {
+  display: grid; gap: var(--e3);
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+}
+.mesa {
+  border: 1px solid var(--line);
+  border-radius: var(--raio);
+  background: var(--paper);
+  padding: var(--e3);
+  text-align: left;
+  display: flex; flex-direction: column; gap: 0.3rem;
+  min-height: 118px;
+}
+.mesa:hover { background: var(--cream); }
+/* mesa ocupada ganha peso na borda esquerda, não cor de fundo */
+.mesa.ocupada { border-left: 3px solid var(--amber); }
+.mesa .topo { display: flex; align-items: center; justify-content: space-between; gap: var(--e2); }
+.mesa .numero { font-family: var(--titulo); font-size: var(--t22); line-height: 1; }
+.mesa .total {
+  font-family: var(--numero); font-size: var(--t17); font-weight: 700;
+  font-variant-numeric: tabular-nums; margin-top: auto;
+}
+.mesa .quem {
+  font-size: var(--t11); color: var(--muted); line-height: 1.35;
+  /* nome composto longo transbordava o cartao; corta em duas linhas com reticencia */
+  overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* mesa selecionada: outline, e nao box-shadow. O sistema tem UMA sombra, o anel
+   de foco, e nenhuma decorativa -- mesmo uma sombra sem blur abre precedente */
+.mesa[aria-pressed="true"] { border-color: var(--stout); outline: 1px solid var(--stout); outline-offset: -2px; }
+
+/* --- a comanda de papel: o elemento assinatura --------------------------- */
+.comanda {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--raio);
+  padding: var(--e4);
+  max-width: 34rem;
+}
+.comanda .cabeca {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: var(--e3); padding-bottom: var(--e3);
+  border-bottom: 1px solid var(--line); margin-bottom: var(--e3);
+}
+.comanda .cabeca .mesa-nome { font-family: var(--titulo); font-size: var(--t22); line-height: 1.1; }
+
+/* A linha com pontilhado de condução. Quantidade em monoespaçada, nome do item,
+   pontilhado preenchendo o vão, valor à direita. É o objeto que o software
+   substitui, e a única peça decorativa do sistema. */
+.itens { margin: 0; }
+.item {
+  display: flex; align-items: baseline; gap: var(--e2);
+  padding: 0.22rem 0;
+  font-size: var(--t15);
+}
+.item .qtd {
+  font-family: var(--numero); font-variant-numeric: tabular-nums;
+  min-width: 2.1rem; text-align: right; color: var(--muted);
+}
+.item .nome { flex: 0 1 auto; }
+.item .conducao {
+  flex: 1 1 1rem; min-width: 1rem;
+  border-bottom: 1px dotted var(--line);
+  transform: translateY(-0.28em);
+}
+.item .valor {
+  font-family: var(--numero); font-variant-numeric: tabular-nums;
+  font-weight: 700; white-space: nowrap;
+}
+.item .acoes { display: flex; gap: 0.1rem; flex: none; }
+
+/* O bar não apaga, o bar risca. */
+.item.cancelado .nome { text-decoration: line-through; color: var(--muted); }
+.item.cancelado .qtd  { text-decoration: line-through; }
+.item.cancelado .valor {
+  text-decoration: none; color: var(--brick);
+  font-family: var(--ui); font-size: var(--t10); font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.item.pendente .nome::after {
+  content: 'na cozinha'; margin-left: var(--e2);
+  font-size: var(--t10); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--amber-ink);
+}
+
+/* Traço de 2px e o total escrito embaixo. */
+.total-comanda {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: var(--e3);
+  margin-top: var(--e3); padding-top: var(--e2);
+  border-top: 2px solid var(--stout);
+}
+.total-comanda .valor {
+  font-family: var(--numero); font-size: var(--t28); font-weight: 700;
+  font-variant-numeric: tabular-nums; line-height: 1.1;
+}
+.acoes-comanda { display: flex; gap: var(--e2); margin-top: var(--e4); flex-wrap: wrap; }
+
+/* --- lançar item --------------------------------------------------------- */
+.lancar { margin-top: var(--e5); border-top: 1px dashed var(--line); padding-top: var(--e3); }
+.pilulas { display: flex; flex-wrap: wrap; gap: var(--e1); margin-bottom: var(--e2); }
+.pilulas button { font-size: var(--t11); padding: 0.2rem 0.5rem; }
+.pilulas button[aria-pressed="true"] { background: var(--stout); color: var(--cream); border-color: var(--stout); }
+.resultados { max-height: 15rem; overflow-y: auto; border: 1px solid var(--line); border-radius: var(--raio); background: var(--paper); }
+.resultados li { border-bottom: 1px solid var(--line); }
+.resultados li:last-child { border-bottom: none; }
+.resultados button {
+  width: 100%; display: flex; align-items: baseline; gap: var(--e2);
+  border: none; background: none; padding: 0.4rem var(--e3); text-align: left;
+  border-radius: 0;
+}
+.resultados button:hover { background: var(--cream); }
+.resultados .preco { margin-left: auto; font-family: var(--numero); font-weight: 700; }
+
+/* --- listas e tabelas ---------------------------------------------------- */
+.tabela { width: 100%; border-collapse: collapse; background: var(--paper); font-size: var(--t13); }
+.tabela th, .tabela td {
+  padding: 0.42rem var(--e3); text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.tabela th {
+  font-size: var(--t10); font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted);
+  border-bottom: 1.5px solid var(--stout); white-space: nowrap;
+}
+.tabela tbody tr:hover { background: var(--cream); }
+/* nowrap: sem isto "R$ 3.206,00" quebrava depois do R$, e valor de dinheiro
+   partido em duas linhas fica ilegivel numa coluna de numeros */
+.tabela td.num, .tabela th.num {
+  text-align: right; white-space: nowrap;
+  font-family: var(--numero); font-variant-numeric: tabular-nums;
+}
+.tabela .acoes { display: flex; gap: var(--e1); justify-content: flex-end; }
+.rolagem { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--raio); }
+
+/* cardápio agrupado por seção */
+.secao-cardapio { margin-bottom: var(--e5); }
+.secao-cardapio > h3 {
+  display: flex; align-items: baseline; gap: var(--e2);
+  padding-bottom: var(--e1); margin-bottom: var(--e2);
+  border-bottom: 1.5px solid var(--stout);
+}
+.esgotado .nome-produto { color: var(--muted); }
+
+/* --- relatórios ---------------------------------------------------------- */
+.painel {
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--raio); padding: var(--e4); margin-bottom: var(--e4);
+}
+.painel > h3 { margin-bottom: var(--e1); }
+.painel > .rotulo { display: block; margin-bottom: var(--e3); }
+/* 26rem e nao 320px: com 320px as tabelas de quatro e cinco colunas ficavam
+   estreitas demais, o nome do produto quebrava em tres linhas e a coluna de
+   dinheiro era cortada pela rolagem horizontal. min(100%,...) evita transbordar
+   em tela estreita. */
+.grade-relatorios {
+  display: grid; gap: var(--e4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+}
+.grafico-caixa { position: relative; }
+canvas { display: block; width: 100%; height: auto; }
+
+/* --- as duas animações do sistema ---------------------------------------- */
+@keyframes realce {
+  from { background: var(--amber); }
+  to   { background: transparent; }
+}
+.recem-lancado { animation: realce 200ms ease-out; }
+
+/* o total contando até o novo valor fica em js/ui.js; aqui só o respeito ao
+   prefers-reduced-motion, que desliga as duas */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+/* --- responsivo ---------------------------------------------------------- */
+@media (max-width: 900px) {
+  .moldura { flex-direction: column; }
+  .barra {
+    flex: none; flex-direction: row; align-items: center;
+    gap: var(--e3); padding: var(--e2) var(--e3); flex-wrap: wrap;
+  }
+  .marca { padding: 0; }
+  .marca .nome { font-size: var(--t17); }
+  .menu { flex-direction: row; flex-wrap: wrap; }
+  .menu a { padding: 0.3rem var(--e2); border-left: none; border-bottom: 3px solid transparent; }
+  .menu a[aria-current="page"] { border-left-color: transparent; border-bottom-color: var(--amber); }
+  .rodape-barra { display: none; }
+  .conteudo { padding: var(--e4) var(--e3); }
+}
+
+@media (max-width: 600px) {
+  .salao { grid-template-columns: repeat(2, 1fr); }
+  .placar > div { flex: 1 1 46%; border-right: none; border-bottom: 1px solid var(--line); }
+  .comanda { padding: var(--e3); }
+}
+
+/* 320px: nada pode transbordar */
+@media (max-width: 380px) {
+  .salao { grid-template-columns: 1fr; }
+  .conteudo { padding: var(--e3) var(--e2); }
+  .total-comanda .valor { font-size: var(--t22); }
+  .item .acoes { flex-wrap: wrap; }
+}
+
+/* --- diálogo de formulário ------------------------------------------------
+   <dialog> nativo: Escape fecha, foco fica preso dentro, fundo bloqueado — sem
+   biblioteca. Substitui a sequência de prompt() da versão anterior.
+   ------------------------------------------------------------------------- */
+.dialogo {
+  border: 1px solid var(--stout);
+  border-radius: var(--raio);
+  background: var(--paper);
+  color: var(--ink);
+  padding: var(--e4);
+  width: min(24rem, calc(100vw - 2rem));
+  font: inherit;
+}
+.dialogo::backdrop { background: rgba(27, 20, 16, 0.55); }
+.dialogo h3 { margin-bottom: var(--e3); }
+.dialogo .campos { display: flex; flex-direction: column; gap: var(--e2); }
+.dialogo .linha-caixa { display: flex; align-items: center; gap: var(--e2); font-size: var(--t13); }
+.dialogo .linha-caixa input { width: auto; }
+.dialogo .acoes-dialogo { display: flex; justify-content: flex-end; gap: var(--e2); margin-top: var(--e4); }

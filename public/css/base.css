@@ -1,0 +1,148 @@
+/* ===========================================================================
+   Base: reset curto, tipografia, controles de formulário.
+   =========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font: 400 var(--t15)/1.5 var(--ui);
+  /* o creme é papelão de bolacha: sem imagem de fundo, sem gradiente */
+}
+
+h1, h2, h3 { margin: 0; font-family: var(--titulo); font-weight: 600; line-height: 1.2; }
+h1 { font-size: var(--t22); }
+h2 { font-size: var(--t22); }
+h3 { font-size: var(--t17); }
+p  { margin: 0 0 var(--e3); }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+/* Números tabulares em monospace: dinheiro, id, quantidade, hora. É o que dá a
+   textura de comanda impressa — e alinha coluna de preço de graça. */
+.num { font-family: var(--numero); font-variant-numeric: tabular-nums; }
+
+/* Micro-rótulo. Caixa alta com letter-spacing SÓ aqui, nos 10px, e em nenhum
+   outro lugar — espalhar isso é o que deixa interface com cara de template. */
+.rotulo {
+  font-size: var(--t10); font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted);
+}
+
+.silenciado { color: var(--muted); }
+.centro { text-align: center; }
+.direita { text-align: right; }
+
+/* --- foco -----------------------------------------------------------------
+   A única sombra do sistema é esta. O anel usa --amber-ink porque o --amber
+   puro dá 2,48:1 sobre creme e seria invisível (D4).
+   ------------------------------------------------------------------------- */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--amber-ink);
+  outline-offset: 1px;
+  border-radius: var(--raio);
+}
+
+/* --- controles ----------------------------------------------------------- */
+input, select, textarea, button {
+  font: inherit;
+  color: inherit;
+  border-radius: var(--raio);
+}
+
+input[type="text"], input[type="number"], input[type="date"], input[type="search"], select {
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  min-width: 0;
+  width: 100%;
+}
+input::placeholder { color: var(--muted); opacity: 1; }
+input[type="number"] { font-family: var(--numero); }
+
+label { display: block; }
+label > .rotulo { display: block; margin-bottom: 0.15rem; }
+
+/* --- botões -------------------------------------------------------------- */
+button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--stout);
+  background: var(--paper);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: var(--t13);
+  white-space: nowrap;
+}
+button:hover:not(:disabled) { background: var(--cream); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Ação primária: âmbar preenchendo, texto stout em cima — 5,57:1 */
+button.primario {
+  background: var(--amber);
+  border-color: var(--amber-ink);
+  color: var(--stout);
+  font-weight: 600;
+}
+button.primario:hover:not(:disabled) { background: var(--amber-ink); color: var(--paper); }
+
+button.destrutivo { border-color: var(--brick); color: var(--brick); }
+button.destrutivo:hover:not(:disabled) { background: var(--brick); color: var(--paper); }
+
+button.discreto {
+  border-color: transparent;
+  background: none;
+  color: var(--muted);
+  padding: 0.2rem 0.35rem;
+  font-size: var(--t11);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+}
+button.discreto:hover:not(:disabled) { color: var(--ink); background: none; }
+
+/* --- carimbo de status ---------------------------------------------------
+   Contorno de 1,5px na cor do estado, caixa alta, torto 3° — carimbo de
+   borracha, nunca cor sólida de fundo.
+   ------------------------------------------------------------------------- */
+.carimbo {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  border: 1.5px solid currentColor;
+  border-radius: var(--raio);
+  font-size: var(--t10); font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(-3deg);
+  white-space: nowrap;
+}
+.carimbo.aberta,    .carimbo.pendente  { color: var(--amber-ink); }
+.carimbo.livre,     .carimbo.fechada,
+.carimbo.entregue,  .carimbo.paga      { color: var(--olive); }
+.carimbo.ocupada,   .carimbo.a-pagar   { color: var(--blue); }
+.carimbo.cancelada, .carimbo.cancelado { color: var(--brick); }
+
+/* --- utilitários de layout ---------------------------------------------- */
+.linha-controles { display: flex; flex-wrap: wrap; gap: var(--e2); align-items: flex-end; }
+.linha-controles > * { flex: 0 1 auto; }
+.cresce { flex: 1 1 12rem; }
+
+.aviso {
+  padding: var(--e2) var(--e3);
+  border: 1px solid var(--brick);
+  border-left-width: 3px;
+  background: var(--paper);
+  color: var(--brick);
+  font-size: var(--t13);
+}
+
+/* Tela vazia é convite, não desculpa. */
+.vazio {
+  padding: var(--e6) var(--e4);
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  background: var(--paper);
+}
+.vazio svg { width: 40px; height: 40px; opacity: 0.5; margin-bottom: var(--e2); }

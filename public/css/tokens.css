@@ -1,0 +1,92 @@
+/* ===========================================================================
+   Bento's Beer — tokens
+   ===========================================================================
+
+   O conceito é "a comanda de papel": um bar não roda em dashboard, roda em
+   papel amarelado no balcão, com o pedido rabiscado, riscos no que voltou e um
+   total escrito embaixo de um traço. E o Papa Bento XVI, bávaro, ancora o
+   resto — cervejaria alemã, chope, tipografia de rótulo.
+
+   Sobre os contrastes: os valores declarados na especificação não se
+   confirmaram no cálculo WCAG. `muted` sobre `cream` dava 3,94:1 (declarado
+   4,7) e reprovava em AA; e o âmbar como TEXTO ou BORDA sobre creme dá 2,48:1,
+   reprovando até no mínimo de 3:1 para componente não-textual — o que
+   condenaria justamente o carimbo de status e o anel de foco, que a
+   especificação pedia em âmbar. Ver decisão D4.
+
+   Daí a regra que vale para todo este projeto:
+
+       --amber      só PREENCHE (com texto --stout em cima: 5,57:1)
+       --amber-ink  é o âmbar que ESCREVE, faz BORDA e faz FOCO (4,52:1)
+
+   =========================================================================== */
+
+:root {
+  /* --- superfícies ------------------------------------------------------- */
+  --stout: #1B1410;   /* barra lateral, tinta forte, traço do total          */
+  --cream: #EBDFC6;   /* fundo do salão — papelão de bolacha                 */
+  --paper: #F8F1E1;   /* cartões e a comanda                                 */
+  --line:  #D6C4A3;   /* fio impresso, pontilhado de condução                */
+
+  /* --- acentos ----------------------------------------------------------- */
+  --amber:     #C57F1A;  /* chope. SÓ preenchimento                          */
+  --amber-ink: #8A5912;  /* âmbar que escreve: texto, borda, foco   4,52:1   */
+  --blue:      #2E5C8A;  /* azul bávaro: informação, conta pedida   5,28:1   */
+  --brick:     #8C3A2E;  /* destrutivo, item cancelado              5,76:1   */
+  --olive:     #5A6939;  /* mesa livre, conta paga                  4,53:1   */
+
+  /* --- texto ------------------------------------------------------------- */
+  --ink:   #2A211A;   /* 14,02:1 sobre paper                                 */
+  --muted: #72614B;   /*  4,51:1 sobre cream                                 */
+
+  /* --- tipografia: quatro papéis, quatro vozes --------------------------- */
+  --marca:  'UnifrakturCook', 'Times New Roman', serif;  /* só o logotipo    */
+  --titulo: 'Grenze', Georgia, serif;                    /* títulos          */
+  --ui:     'Archivo', system-ui, -apple-system, sans-serif;
+  --numero: 'Courier Prime', 'Courier New', monospace;   /* dinheiro e horas  */
+
+  /* escala fechada: 10 / 11 / 13 / 15 / 17 / 22 / 28 px */
+  --t10: 0.625rem;   --t11: 0.6875rem;  --t13: 0.8125rem;  --t15: 0.9375rem;
+  --t17: 1.0625rem;  --t22: 1.375rem;   --t28: 1.75rem;
+
+  /* --- medidas ----------------------------------------------------------- */
+  --raio: 3px;        /* uniforme. Nada de 16px arredondando tudo            */
+  --e1: 0.25rem;  --e2: 0.5rem;   --e3: 0.75rem;
+  --e4: 1rem;     --e5: 1.5rem;   --e6: 2rem;
+  --barra: 232px;     /* largura da barra lateral                            */
+}
+
+/* ---------------------------------------------------------------------------
+   Fontes locais, não CDN (decisão D8): apresentação em sala sem Wi-Fi não pode
+   perder a tipografia, que é metade da identidade. font-display: swap para o
+   texto aparecer antes de a fonte carregar.
+   --------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'UnifrakturCook'; font-style: normal; font-weight: 700;
+  font-display: swap; src: url('../fonts/unifrakturcook-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Grenze'; font-style: normal; font-weight: 600;
+  font-display: swap; src: url('../fonts/grenze-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Archivo'; font-style: normal; font-weight: 400;
+  font-display: swap; src: url('../fonts/archivo-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Archivo'; font-style: normal; font-weight: 500;
+  font-display: swap; src: url('../fonts/archivo-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Archivo'; font-style: normal; font-weight: 600;
+  font-display: swap; src: url('../fonts/archivo-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Courier Prime'; font-style: normal; font-weight: 400;
+  font-display: swap; src: url('../fonts/courierprime-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Courier Prime'; font-style: normal; font-weight: 700;
+  font-display: swap; src: url('../fonts/courierprime-700.woff2') format('woff2');
+}

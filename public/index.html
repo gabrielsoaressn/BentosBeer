@@ -4,13 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bento's Beer</title>
+  <meta name="description" content="Gerenciamento de bar — salão, comandas, cardápio e relatórios.">
+  <link rel="icon" href="img/bento.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-  <!-- Placeholder da Fase 2. A interface de verdade e construida na Fase 6. -->
-  <main>
-    <h1>Bento's Beer</h1>
-    <p>Servidor no ar. A interface chega na Fase 6.</p>
-    <p><a href="/api/status">/api/status</a></p>
-  </main>
+  <div class="moldura">
+    <nav class="barra" aria-label="Navegação principal">
+      <div class="marca">
+        <!-- caneca de chope cuja espuma é a silhueta de uma mitra papal -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4.5 9.4C4.1 6.4 6.3 3.2 10.3 1.5c4 1.7 6.2 4.9 5.8 7.9"/>
+          <path d="M5.2 6.4h10.2" stroke="#C57F1A" stroke-width="1.8"/>
+          <path d="M4.3 9.4h12"/>
+          <path d="M5.2 9.4v9.9a1.7 1.7 0 0 0 1.7 1.7h6.8a1.7 1.7 0 0 0 1.7-1.7V9.4"/>
+          <path d="M15.4 11.9h2.3a1.8 1.8 0 0 1 1.8 1.8v2.2a1.8 1.8 0 0 1-1.8 1.8h-2.3"/>
+        </svg>
+        <span class="nome">Bento's Beer</span>
+      </div>
+
+      <div class="menu" id="menu"></div>
+
+      <div class="rodape-barra">
+        Trabalho de Banco de Dados<br>
+        UFPB · Gabriel, Rivando e Rafael
+      </div>
+    </nav>
+
+    <main class="conteudo" id="conteudo" tabindex="-1">
+      <p class="silenciado">Carregando o salão…</p>
+    </main>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

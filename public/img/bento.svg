@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"
+     fill="none" stroke="currentColor" stroke-width="1.5"
+     stroke-linecap="round" stroke-linejoin="round" role="img"
+     aria-label="Caneca de chope com espuma em forma de mitra">
+  <!--
+    A piada que dá nome ao bar, desenhada em vez de fotografada.
+
+    A espuma da caneca é a silhueta de uma mitra papal, com a faixa horizontal
+    em âmbar atravessando. Sem rosto e sem foto: resolve o direito de imagem e,
+    principalmente, continua legível a 16px, onde uma fotografia viraria mancha.
+
+    A silhueta nasce rente à borda e transborda um pouco para os lados antes de
+    fechar em ponta — é o que faz a forma ler como espuma e como mitra ao mesmo
+    tempo. Estreitá-la faria virar capuz.
+
+    Quem conhece a referência reconhece o Bento XVI, bávaro de Marktl am Inn.
+    Quem não conhece vê uma caneca de chope. As duas leituras servem.
+
+    Traço de 1,5px em currentColor, para herdar a cor de onde for aplicado.
+    Sem gradiente, sem sombra, sem emoji — as regras da §7.6.
+  -->
+
+  <!-- espuma em mitra: sai da borda, transborda e fecha em ponta sobre o centro -->
+  <path d="M4.5 9.4C4.1 6.4 6.3 3.2 10.3 1.5c4 1.7 6.2 4.9 5.8 7.9" />
+
+  <!-- faixa da mitra, o único elemento colorido do ícone -->
+  <path d="M5.2 6.4h10.2" stroke="#C57F1A" stroke-width="1.8" />
+
+  <!-- borda da caneca: separa a espuma do vidro -->
+  <path d="M4.3 9.4h12" />
+
+  <!-- corpo da caneca -->
+  <path d="M5.2 9.4v9.9a1.7 1.7 0 0 0 1.7 1.7h6.8a1.7 1.7 0 0 0 1.7-1.7V9.4" />
+
+  <!-- asa -->
+  <path d="M15.4 11.9h2.3a1.8 1.8 0 0 1 1.8 1.8v2.2a1.8 1.8 0 0 1-1.8 1.8h-2.3" />
+</svg>
